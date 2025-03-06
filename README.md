@@ -18,3 +18,4 @@
 #### https://www.tianapi.com/apiview/45
 ## KV空间命名
 #### 不想修改代码的话，KV命名空间名称设置为time2
+# 网页展示：https://time2.m0m0.ggff.net/
