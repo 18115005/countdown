@@ -10,10 +10,8 @@
 #### 提供“隐藏倒计时”按钮，可切换倒计时的显示/隐藏状态。
 ### 3.农历信息展示
 ## 修改上下班时间
-#### const openingTime = new Date();
-#### openingTime.setHours(8, 30, 0, 0); // 上班时间改为 8:30
-#### const closingTime = new Date();
-#### closingTime.setHours(17, 30, 0, 0); // 下班时间改为 17:30
+#### const openingTime = new Date(); openingTime.setHours(8, 30, 0, 0); // 上班时间改为 8:30
+#### const closingTime = new Date();closingTime.setHours(17, 30, 0, 0); // 下班时间改为 17:30
 ## API获取
 #### https://www.tianapi.com/apiview/45
 ## KV空间命名
