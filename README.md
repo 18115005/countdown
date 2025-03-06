@@ -14,3 +14,7 @@
 #### openingTime.setHours(8, 30, 0, 0); // 上班时间改为 8:30
 #### const closingTime = new Date();
 #### closingTime.setHours(17, 30, 0, 0); // 下班时间改为 17:30
+## API获取
+#### https://www.tianapi.com/apiview/45
+## KV空间命名
+#### 不想修改代码的话，KV命名空间名称设置为time2
