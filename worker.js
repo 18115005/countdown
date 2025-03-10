@@ -21,7 +21,7 @@ export default {
       }
 
       const { dateString, expirationTimestamp } = getBeijingDateInfo();
-      const kvKey = `lunar_data_today`;
+      const kvKey = "lunar_data_today";
 
       let cachedData = await env.time2.get(kvKey, { type: "json" });
 
@@ -32,7 +32,7 @@ export default {
           return new Response(`API 请求失败，状态码: ${apiResponse.status}`, { status: 500 });
         }
         const data = await apiResponse.json();
-        console.log("API 返回数据:", JSON.stringify(data)); // 调试 API 数据
+        console.log("API 返回数据:", JSON.stringify(data));
         if (!data || data.code !== 200) {
           return new Response(`API 响应错误: ${JSON.stringify(data)}`, { status: 500 });
         }
@@ -44,7 +44,6 @@ export default {
         console.log(`📌 读取 KV 缓存成功: ${dateString}`);
       }
 
-      // 根据请求头返回 JSON 或 HTML
       const acceptHeader = request.headers.get("Accept");
       if (acceptHeader && acceptHeader.includes("application/json")) {
         return new Response(JSON.stringify(cachedData), {
@@ -52,14 +51,13 @@ export default {
         });
       }
 
-      // 默认返回 HTML
       return new Response(
         `<!DOCTYPE html>
 <html lang="zh">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>北京时间</title>
+  <title>不想上班</title>
   <style>
     body {
       background-color: black;
@@ -72,16 +70,17 @@ export default {
       margin: 0;
       text-align: center;
     }
-    #time { font-size: 6em; opacity: 1; } /* 时间保持完全不透明 */
-    #countdown { font-size: 2em; opacity: 0.95; } /* 倒计时 95% 透明度 */
+    #time { font-size: 6em; opacity: 1; }
+    #yearEndCountdown { font-size: 2em; opacity: 0.9; } /* 年末倒计时 90% 透明度 */
+    #countdown { font-size: 2em; opacity: 0.95; }
     #lunar { 
       font-size: 1.5em; 
       display: flex;
       flex-direction: column;
       gap: 5px;
     }
-    #lunar .lunar-item { opacity: 0.85; } /* 默认 95% 透明度 */
-    #lunar .shengxiao { opacity: 0.8; } /* 生肖 90% 透明度 */
+    #lunar .lunar-item { opacity: 0.85; }
+    #lunar .shengxiao { opacity: 0.8; }
     #toggleButton {
       background: none;
       border: none;
@@ -138,15 +137,21 @@ export default {
           document.getElementById('countdown').innerText = "已经下班啦！";
         }
       }
+
+      // 计算本年剩余天数
+      const yearEnd = new Date(now.getFullYear(), 11, 31, 23, 59, 59, 999); // 本年12月31日23:59:59
+      const diffTime = yearEnd - now;
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      document.getElementById('yearEndCountdown').innerText = 
+        diffDays > 0 ? \`本年还剩 \${diffDays} 天\` : "今天是本年最后一天！";
     }
 
     fetch(window.location.href, { headers: { "Accept": "application/json" } })
       .then(response => response.json())
       .then(data => {
         const lunarDiv = document.getElementById('lunar');
-        lunarDiv.innerHTML = ''; // 清空现有内容
+        lunarDiv.innerHTML = '';
         
-        // 创建农历信息数组，生肖放在最后
         const lunarItems = [
           { text: \`📅 农历：\${data.lubarmonth || '未知'}\${data.lunarday || '未知'}\`, class: 'lunar-item' },
           data.lunar_festival ? { text: \`农历节日：\${data.lunar_festival}\`, class: 'lunar-item' } : null,
@@ -157,7 +162,6 @@ export default {
           data.shengxiao ? { text: \`🐾 生肖：\${data.shengxiao}\`, class: 'lunar-item shengxiao' } : null
         ].filter(Boolean);
 
-        // 将每一项添加到 lunarDiv
         lunarItems.forEach(item => {
           const div = document.createElement('div');
           div.textContent = item.text;
@@ -175,6 +179,7 @@ export default {
 </head>
 <body>
   <div id="time"></div>
+  <div id="yearEndCountdown"></div> <!-- 本年剩余天数 -->
   <div id="countdown"></div>
   <div id="lunar"></div>
   <button id="toggleButton" onclick="toggleCountdown()">隐藏倒计时</button>
